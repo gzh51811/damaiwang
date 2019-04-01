@@ -1,0 +1,25 @@
+.logo {
+    width: 150px;
+    height: 31px;
+    background: url("../../assets/img/logo.png") no-repeat;
+    background-size: 24px;
+    margin: 16px 28px 16px -22px;
+    float: left;
+    color: white;
+    line-height: 31px;
+    font-size: 20px;
+    font-weight: 500;
+    padding-left: 30px
+}
+
+.username {
+    /* width: 150px; */
+    height: 31px;
+    float: right;
+    color: white;
+    margin-right: -24px
+}
+
+.home {
+    height: 100vh;
+}

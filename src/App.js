@@ -1,28 +1,20 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Route, Link, Redirect , Switch} from "react-router-dom";
 import './App.css';
-
+import Home from './pages/home/Home.jsx'
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
-}
-
-export default App;
+      <Router>
+        <div className="App">
+          <Switch>
+            <Route exact path="/" render={() => <Redirect to='/home'></Redirect>}></Route>
+            <Route path="/home" component={Home} />
+            </Switch>
+        </div>
+      </Router>
+        );
+      }
+    }
+    
+    export default App;
