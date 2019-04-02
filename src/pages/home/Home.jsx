@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'antd';
 import { connect } from 'react-redux'
 import './Home.css';
 import { BrowserRouter as Router, Route, Link, Switch, Redirect } from "react-router-dom";
@@ -9,8 +8,6 @@ import {
 
 
 import DataOverview from '../../components/DataOverview/DataOverview.jsx'
-import AllVenues from '../../components/AllVenues/AllVenues.jsx'
-import AddVenue from '../../components/AddVenue/AddVenue.jsx'
 import AllGoods from '../../components/AllGoods/AllGoods.jsx'
 import AddGoods from '../../components/AddGoods/AddGoods.jsx'
 import Classification from '../../components/Classification/Classification.jsx'
@@ -24,16 +21,6 @@ const routes = [
         path: "/home/DataOverview",
         exact: true,
         main: DataOverview
-    },
-    {
-        path: "/home/AllVenues",
-        exact: true,
-        main: AllVenues
-    },
-    {
-        path: "/home/AddVenue",
-        exact: true,
-        main: AddVenue
     },
     {
         path: "/home/AllGoods",
@@ -60,7 +47,7 @@ const routes = [
 function tz(e) {
     // console.log(e.key)
     // console.log(routes[e.key * 1].path)
-    if ((e.key * 1) < 7) {
+    if ((e.key * 1) < 5) {
         this.props.history.push(routes[e.key * 1].path)
     }
 
@@ -77,16 +64,23 @@ class Home extends React.Component {
     }
 
     componentWillMount() {
-        // console.log("根据链接更改列表选中")
-        // console.log(this.props.location.pathname);
+
+        // 路由匹配状态
+        var ppzt = false;
+
         routes.forEach((nr, x) => {
             if (nr.path == this.props.location.pathname) {
                 // console.log(nr, x)
                 // this.setState({ defaultSelectedKeys: ['"'+x+'"'] });
                 this.state.defaultSelectedKeys = [String(x)]
                 // console.log(this.state.defaultSelectedKeys)
+                ppzt = true
             }
         });
+
+        if (!ppzt) {
+            this.props.history.push(routes[0].path)
+        }
 
 
 
@@ -128,27 +122,22 @@ class Home extends React.Component {
                                 <span>数据概览</span>
                             </Menu.Item>
 
-                            <SubMenu key="sub1" title={<span><Icon type="home" />场馆管理</span>}>
-                                <Menu.Item key="1">所有场馆</Menu.Item>
-                                <Menu.Item key="2">添加场馆</Menu.Item>
-                            </SubMenu>
-
                             <SubMenu key="sub2" title={<span><Icon type="shop" />商品管理</span>}>
-                                <Menu.Item key="3">所有商品</Menu.Item>
-                                <Menu.Item key="4">发布商品</Menu.Item>
+                                <Menu.Item key="1">所有商品</Menu.Item>
+                                <Menu.Item key="2">发布商品</Menu.Item>
                             </SubMenu>
 
-                            <Menu.Item key="5">
+                            <Menu.Item key="3">
                                 <Icon type="bars" />
                                 <span>分类管理</span>
                             </Menu.Item>
 
-                            <Menu.Item key="6">
+                            <Menu.Item key="4">
                                 <Icon type="setting" />
                                 <span>后台账号管理</span>
                             </Menu.Item>
 
-                            <Menu.Item key="7" >
+                            <Menu.Item key="5" >
                                 <Icon type="export" />
                                 <span>退出账号</span>
                             </Menu.Item>
@@ -168,15 +157,17 @@ class Home extends React.Component {
                         >
 
                             {/* <Switch>
-                                    <Route exact path="/home" render={() => <Redirect to='/home/DataOverview'></Redirect>}></Route>
-                                    <Route path="/home/DataOverview" component={DataOverview} />
-                                    <Route path="/home/AllVenues" component={AllVenues} />
-                                    <Route path="/home/AddVenue" component={AddVenue} />
-                                    <Route path="/home/AllGoods" component={AllGoods} />
-                                    <Route path="/home/AddGoods" component={AddGoods} />
-                                    <Route path="/home/Classification" component={Classification} />
-                                    <Route path="/home/BackgroundAccount" component={BackgroundAccount} />
-                                </Switch> */}
+                                <Route exact path="/home" render={() => <Redirect to='/home/DataOverview'></Redirect>}></Route>
+                                <Route path="/home/DataOverview" component={DataOverview} />
+                                <Route path="/home/AllVenues" component={AllVenues} />
+                                <Route path="/home/AddVenue" component={AddVenue} />
+                                <Route path="/home/AllGoods" component={AllGoods} />
+                                <Route path="/home/AddGoods" component={AddGoods} />
+                                <Route path="/home/Classification" component={Classification} />
+                                <Route path="/home/BackgroundAccount" component={BackgroundAccount} />
+                                <Route component={Non} />
+                            </Switch> */}
+
                             <Switch>
                                 {routes.map((route, index) => (
 
