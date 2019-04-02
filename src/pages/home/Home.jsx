@@ -1,10 +1,9 @@
 import React from 'react';
-import { Button } from 'antd';
 import { connect } from 'react-redux'
 import './Home.css';
-import { BrowserRouter as Router, Route, Link, Switch, Redirect } from "react-router-dom";
+import {  Route, Switch} from "react-router-dom";
 import {
-    Layout, Menu, Breadcrumb, Icon,
+    Layout, Menu, Icon,
 } from 'antd';
 
 
@@ -80,11 +79,13 @@ class Home extends React.Component {
         // console.log("根据链接更改列表选中")
         // console.log(this.props.location.pathname);
         routes.forEach((nr, x) => {
-            if (nr.path == this.props.location.pathname) {
+            if (nr.path ===this.props.location.pathname) {
                 // console.log(nr, x)
                 // this.setState({ defaultSelectedKeys: ['"'+x+'"'] });
-                this.state.defaultSelectedKeys = [String(x)]
+                this.setState({
+                    defaultSelectedKeys:[String(x)]
                 // console.log(this.state.defaultSelectedKeys)
+                })
             }
         });
 
