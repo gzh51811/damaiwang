@@ -154,7 +154,7 @@ class Home extends React.Component {
 
                         {/* 右侧容器 */}
                         <Content style={{
-                            background: '#fff', padding: 24, margin: 0, marginTop: 25, minHeight: 280,
+                            background: '#fff', padding: 24, margin: 0, marginTop: 25,overflow:"initial"
                         }}
                         >
 

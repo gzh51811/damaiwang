@@ -1,127 +1,243 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import { Table} from 'antd';
+import { Table, Input, InputNumber, Popconfirm, Form, } from 'antd';
+import './allgoods.css'
 
+const FormItem = Form.Item;
+const EditableContext = React.createContext();
 
-const columns = [
-    {
-        title: 'actors',
-        dataIndex: 'actors',
-    }, {
-        title: 'Name',
-        dataIndex: 'Name',
-    }, {
-        title: 'showTime',
-        dataIndex: 'showTime',
-    }, {
-        title: 'venue',
-        dataIndex: 'venue',
-    }, {
-        title: 'venueCity',
-        dataIndex: 'venueCity',
-    }, {
-        title: 'verticalPic',
-        dataIndex: 'verticalPic',
-    }, {
-        title: 'formattedPriceStr',
-        dataIndex: 'formattedPriceStr',
-    }, {
-        title: 'categoryName',
-        dataIndex: 'categoryName',
-    }, {
-        title: 'showstatus',
-        dataIndex: 'showstatus',
-    }];
-
-const data = [];
-for (let i = 0; i < 46; i++) {
-    data.push({
-        key: i,
-        name: `Edward King ${i}`,
-        age: 32,
-        address: `London, Park Lane no. ${i}`,
-    });
-}
-
-class AllGoods extends Component {
-    constructor(props){
-        super(props)
-        this.props=props;
-        this.state={
-            goodsData:[],
-            selectedRowKeys: []
+class EditableCell extends React.Component {
+    getInput = () => {
+        if (this.props.inputType === 'number') {
+            return <InputNumber />;
         }
-        this.getData=this.getData.bind(this)
-    }
-    getData(){
-        fetch(` http://localhost:3002/setting/all`,{
-    method:"GET"
-    }).then(res=>res.jsonn()).then(data=>{
-            console.log(data)
-            this.setState({
-                goodsData:data,
-            })
-        }).catch(e=>console.log('错误：',e))
-    }
-    componentWillMount() {
-        this.getData();
-    }
-    // state = {
-    //     selectedRowKeys: [], // Check here to configure the default column
-    // };
+        return <Input />;
+    };
 
-    onSelectChange = (selectedRowKeys) => {
-        // console.log('selectedRowKeys changed: ', selectedRowKeys);
-        this.setState({ selectedRowKeys });
-    }
     render() {
-        const { selectedRowKeys } = this.state;
-        const rowSelection = {
-            selectedRowKeys,
-            onChange: this.onSelectChange,
-            hideDefaultSelections: true,
-            selections: [{
-                key: 'all-data',
-                text: 'Select All Data',
-                onSelect: () => {
-                    this.setState({
-                        selectedRowKeys: [...Array(46).keys()], // 0...45
-                    });
-                },
-            }, {
-                key: 'odd',
-                text: 'Select Odd Row',
-                onSelect: (changableRowKeys) => {
-                    let newSelectedRowKeys = [];
-                    newSelectedRowKeys = changableRowKeys.filter((key, index) => {
-                        if (index % 2 !== 0) {
-                            return false;
-                        }
-                        return true;
-                    });
-                    this.setState({ selectedRowKeys: newSelectedRowKeys });
-                },
-            }, {
-                key: 'even',
-                text: 'Select Even Row',
-                onSelect: (changableRowKeys) => {
-                    let newSelectedRowKeys = [];
-                    newSelectedRowKeys = changableRowKeys.filter((key, index) => {
-                        if (index % 2 !== 0) {
-                            return true;
-                        }
-                        return false;
-                    });
-                    this.setState({ selectedRowKeys: newSelectedRowKeys });
-                },
-            }],
-            onSelection: this.onSelection,
-        };
+        const {
+            editing,
+            dataIndex,
+            title,
+            inputType,
+            record,
+            index,
+            ...restProps
+        } = this.props;
         return (
-            <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
+            <EditableContext.Consumer>
+                {(form) => {
+                    const { getFieldDecorator } = form;
+                    return (
+                        <td {...restProps}>
+                            {editing ? (
+                                <FormItem style={{ margin: 0 }}>
+                                    {getFieldDecorator(dataIndex, {
+                                        rules: [{
+                                            required: true,
+                                            message: `Please Input ${title}!`,
+                                        }],
+                                        initialValue: record[dataIndex],
+                                    })(this.getInput())}
+                                </FormItem>
+                            ) : restProps.children}
+                        </td>
+                    );
+                }}
+            </EditableContext.Consumer>
         );
     }
 }
+
+class EditableTable extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: []
+        }
+       
+        this.columns = [
+            {
+                title: 'verticalPic',
+                dataIndex: 'verticalPic',
+                width: '10%',
+                editable: false,
+            },
+            {
+                title: 'Name',
+                dataIndex: 'Name',
+                width: '20%',
+                editable: true,
+            },
+            {
+                title: 'showTime',
+                dataIndex: 'showTime',
+                width: '10%',
+                editable: true,
+            },
+            {
+                title: 'venue',
+                dataIndex: 'venue',
+                width: '10%',
+                editable: true,
+            }, {
+                title: 'venueCity',
+                dataIndex: 'venueCity',
+                width: '10%',
+                editable: true,
+            }, {
+                title: 'PriceStr',
+                dataIndex: 'PriceStr',
+                width: '10%',
+                editable: true,
+            }, {
+                title: 'categoryName',
+                dataIndex: 'categoryName',
+                width: '11.5%',
+                editable: true,
+            }, {
+                title: "subname",
+                dataIndex: "subname",
+                width: '10%',
+                editable: true,
+            }, {
+                title: 'operation',
+                dataIndex: 'operation',
+                render: (text, record) => {
+                    const { editingKey } = this.state;
+                    const editable = this.isEditing(record);
+                    return (
+                        <div>
+                            {editable ? (
+                                <span>
+                                    <EditableContext.Consumer>
+                                        {form => (
+                                            <a
+                                                href="javascript:;"
+                                                onClick={() => this.save(form, record.key)}
+                                                style={{ marginRight: 8 }}
+                                            >
+                                                Save
+                      </a>
+                                        )}
+                                    </EditableContext.Consumer>
+                                    <Popconfirm
+                                        title="Sure to cancel?"
+                                        onConfirm={() => this.cancel(record.key)}
+                                    >
+                                        <a>Cancel</a>
+                                    </Popconfirm>
+                                </span>
+                            ) : (
+                                    <a disabled={editingKey !== ''} onClick={() => this.edit(record.key)}>Edit</a>
+                                )}
+                        </div>
+                    );
+                },
+            },
+        ];
+    }
+    getData() {
+        fetch(` http://localhost:3002/setting/all`, {
+            method: "GET"
+        }).then(res => res.json())
+            .then(msg => {
+                console.log(msg.info)
+                this.setState({
+                    data: msg.info.map(function (item, index) {
+                        return ({
+                            key: index,
+                            verticalPic: <img className="img" src={item.verticalPic} />,
+                            Name: item.name,
+                            showTime: item.showtime,
+                            venue: item.venue,
+                            venueCity: item.venuecity,
+                            PriceStr: item.price_str,
+                            categoryName: item.categoryname,
+                            subname: item.subcategoryname
+                        })
+                    })
+                })
+            })
+            .catch(e => console.log('错误：', e))
+    }
+    componentWillMount() {
+        this.getData()
+    }
+
+    isEditing = record => record.key === this.state.editingKey;
+
+    cancel = () => {
+        this.setState({ editingKey: '' });
+    };
+
+    save(form, key) {
+        form.validateFields((error, row) => {
+            if (error) {
+                return;
+            }
+            const newData = [...this.state.data];
+            const index = newData.findIndex(item => key === item.key);
+            if (index > -1) {
+                const item = newData[index];
+                newData.splice(index, 1, {
+                    ...item,
+                    ...row,
+                });
+                this.setState({ data: newData, editingKey: '' });
+            } else {
+                newData.push(row);
+                this.setState({ data: newData, editingKey: '' });
+            }
+        });
+    }
+
+    edit(key) {
+        this.setState({ editingKey: key });
+    }
+
+    render() {
+        const components = {
+            body: {
+                cell: EditableCell,
+            },
+        };
+
+        const columns = this.columns.map((col) => {
+            if (!col.editable) {
+                return col;
+            }
+            return {
+                ...col,
+                onCell: record => ({
+                    record,
+                    inputType: col.dataIndex,
+                    dataIndex: col.dataIndex,
+                    title: col.title,
+                    editing: this.isEditing(record),
+                }),
+            };
+        });
+
+        return (
+            <EditableContext.Provider value={this.props.form}>
+                <Table
+                pagination={{ pageSize: 50 }} scroll={{ y: 600 }}
+                    components={components}
+                    bordered
+                    dataSource={this.state.data}
+                    columns={columns}
+                    rowClassName="editable-row"
+                    pagination={{
+                        onChange: this.cancel,
+                    }}
+                />
+            </EditableContext.Provider>
+        );
+    }
+}
+
+const EditableFormTable = Form.create()(EditableTable);
 
 
 export default connect(
@@ -134,4 +250,4 @@ export default connect(
 
         }
     }
-)(AllGoods);
+)(EditableFormTable);

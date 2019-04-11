@@ -8,8 +8,6 @@ import Login from './pages/Login/Login.jsx'
 
 class App extends Component {
 
-  
-
   render() {
     return (
       <Router>

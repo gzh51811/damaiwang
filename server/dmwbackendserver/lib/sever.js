@@ -55,14 +55,12 @@ let find = (col, obj) => {
       if (err) {
         reject(err)
       } else {
-        // resolve(docs);
-        console.log(docs)
+        resolve(docs);
         client.close();
       }
     })
   })
 }
-// find("dmw")
 // 更新
 let update = (col, obj1, obj2) => {
   return new Promise(async (resolve, reject) => {

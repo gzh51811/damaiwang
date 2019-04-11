@@ -19,8 +19,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use((req,res,next)=>{
-  res.append("Access-Control-Allow-Origin","*")
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*"); //允许这个域访问
+
+  res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS"); //允许的请求方法
+
+  res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
   next()
 })
 
