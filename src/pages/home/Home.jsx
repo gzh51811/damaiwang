@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import './Home.css';
-import { BrowserRouter as Router, Route, Link, Switch, Redirect } from "react-router-dom";
+import {  Route, Switch} from "react-router-dom";
 import {
-    Layout, Menu, Breadcrumb, Icon,
+    Layout, Menu, Icon,
 } from 'antd';
 
 
@@ -69,11 +69,13 @@ class Home extends React.Component {
         var ppzt = false;
 
         routes.forEach((nr, x) => {
-            if (nr.path == this.props.location.pathname) {
+            if (nr.path ===this.props.location.pathname) {
                 // console.log(nr, x)
                 // this.setState({ defaultSelectedKeys: ['"'+x+'"'] });
-                this.state.defaultSelectedKeys = [String(x)]
+                this.setState({
+                    defaultSelectedKeys:[String(x)]
                 // console.log(this.state.defaultSelectedKeys)
+                })
                 ppzt = true
             }
         });
@@ -152,7 +154,7 @@ class Home extends React.Component {
 
                         {/* 右侧容器 */}
                         <Content style={{
-                            background: '#fff', padding: 24, margin: 0, marginTop: 25, minHeight: 280,
+                            background: '#fff', padding: 24, margin: 0, marginTop: 25,overflow:"initial"
                         }}
                         >
 
